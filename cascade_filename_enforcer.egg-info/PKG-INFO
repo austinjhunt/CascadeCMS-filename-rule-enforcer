@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: cascade-filename-enforcer
+Version: 0.0.1
+Summary: A Python package utilizing the Cascade CMS 8 REST API to enforce file name rules, namely 1) all lowercase, 2) spaces replaced with hyphens, 3) no trailing spaces
+Home-page: https://github.com/austinjhunt/CascadeCMS-filename-rule-enforcer
+Author: Austin Hunt
+Author-email: huntaj@cofc.edu
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/austinjhunt/CascadeCMS-filename-rule-enforcer/issues
+Description: # Cascade CMS Filename Rule Enforcer
+        This package was developed to automate the enforcement of file naming conventions in an enterprise instance of Cascade CMS 8 for the College of Charleston, but has been re-written in a way that allows you to set the configuration for your own Cascade CMS environment. With over 100 sites to manage, and each site containing improperly named resources that were allowed in the previous Cascade Server 7 from which we migrated, we needed a way of automatically detecting improper file names (file names with spaces and capitalized letters) and fixing them dynamically. This package handles that automation in an object-oriented way. 
+        
+        ## How To Use 
+        
+        ## Assumptions 
+        /content
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
