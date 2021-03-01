@@ -1,0 +1,24 @@
+[{
+    "redesign.cofc.edu": {
+        "bad_assets": [{
+                "old": "facebook coPi 4.png",
+                "new": "facebook-copi-4.png"
+            },
+            {
+                "old": "facebook copy 2.png",
+                "new": "facebook-copy-2.png"
+            },
+            {
+                "old": "facebook copy 3.png",
+                "new": "facebook-copy-3.png"
+            },
+            {
+                "old": "facebook copy.png",
+                "new": "facebook-copy.png"
+            }
+        ],
+        "publish_result": {
+            "success": true
+        }
+    }
+}]
