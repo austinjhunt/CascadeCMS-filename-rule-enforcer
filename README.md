@@ -72,22 +72,24 @@ def main():
             f'{site_name}': {
                 'bad_assets': rule_enforcer.traverse(
                     current_parent_folder=f'{site_name}/content',
-                    site_full_assets_list=[],
-                    skip_sites=["_Auto-Migrated Global_", "_skeleton.cofc.edu"]
-                ),
-                'publish_result': rule_enforcer.publish_site(site_id)
+                    site_full_assets_list=[], # always empty initially
+                    skip_sites=["_Auto-Migrated Global_", "_skeleton.cofc.edu"] # sites to skip enforcement
+                )
             } 
         }
+        site_dictionary[site_name]['publish_result'] = rule_enforcer.publish_site(site_id) 
         site_dicts.append(site_dictionary)
         with open('site_read.json', 'w') as f:
             json.dump(site_dicts, f)
         print(f"Completed scan of site {site_name}")
 
-
 if __name__ == "__main__":
     # One site: redesign.cofc.edu 
-    test()
+    # test()
     # All sites!
     main()
 ```
+--- 
+## Notes
+* If your site(s) does not have a root /content folder (e.g. sitename.edu/content/* in Cascade), be sure to remove the /content portion of the current_parent_folder argument. 
 

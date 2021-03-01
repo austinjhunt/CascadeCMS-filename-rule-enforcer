@@ -4,19 +4,12 @@ import time, requests, json,os
 from requests.utils import quote  
 
 class CascadeCMSFileNameRuleEnforcer: 
-    def __init__(self, cpass=None, cuser=None,restapi=None,debug=False): 
+    def __init__(self, cpass=None, cuser=None,restapi=None): 
         """ Use environment variables to populate base REST API URL and 
-        authentication variables. 
-        Args: 
-        cpass (string) : Cascade user password for REST API authentication
-        cpass (string) : Cascade username for REST API authentication
-        restapi (string) : Base URL of Cascade CMS REST API ending with api/v1
-        debug (boolean): whether to output debug / print statements 
-        """ 
+        authentication variables """ 
         self.cpass = cpass
         self.cuser = cuser
         self.restapi = restapi
-        self.debug = debug
         if self.validate_obj(): 
             self.auth = f"u={self.cuser}&p={self.cpass}"
 
@@ -37,27 +30,6 @@ class CascadeCMSFileNameRuleEnforcer:
                 "CascadeCMSFileNameRuleEnforcer() invocation"
                 )
         return True 
-    
-    def unpublish_resource(self, resource_identifier=None, resource_type=None): 
-        """ Method to unpublish a resource to avoid orphaned files when renaming """
-        response = None
-        if resource_identifier and resource_type:
-            url = f"{self.restapi}/publish/{resource_type}/{resource_identifier}?{self.auth}" 
-            data = {
-                "publishInformation": {
-                    "identifier": {
-                        "id": resource_identifier,
-                        "type": resource_type
-                    },
-                    "unpublish": True,  
-                }
-            }
-            response = requests.post(
-                url,
-                data=json.dumps(data)
-            ).json()
-        return response
-
 
     def rename(self, identifier=None, filetype=None, new_name=None,  destination_container_id=None): 
         """ Method to rename an existing CMS resource via POST request to /move endpoint 
@@ -71,22 +43,7 @@ class CascadeCMSFileNameRuleEnforcer:
         Returns: POST request response 
         """
         response = None
-        if identifier and new_name and destination_container_id and filetype: 
-            # First unpublish the current version to avoid orphaning a file on public server after rename
-            unpublish_response = self.unpublish_resource(
-                resource_identifier=identifier,
-                resource_type=filetype
-            )
-            # Wait 5 seconds after unpublishing before renaming. Otherwise, 
-            # the queue will mess up and Cascade will think you want to unpublish the newly renamed version.
-            if self.debug:
-                print(
-                    "Submitted unpublish request for improperly named asset. "
-                    "Waiting 5 seconds to avoid queue corruption..."
-                    )
-            time.sleep(5)
-            if self.debug:
-                print("Continuing with rename operation!")
+        if identifier and new_name and destination_container_id and filetype:
             # Renaming a file is like moving a file to the same destination container, but giving
             # it a different name
             url = f'{self.restapi}/move/{identifier}?{self.auth}'
@@ -261,19 +218,19 @@ def test(site_name="redesign.cofc.edu",site_id="fca49d0aac1e00090ad4228845233487
     cuser = os.environ.get('CASCADE_CMS_USER','')
     restapi= os.environ.get('CASCADE_CMS_REST_API_BASE','')
     rule_enforcer = CascadeCMSFileNameRuleEnforcer(
-        cpass=cpass, cuser=cuser, restapi=restapi,debug=True
+        cpass=cpass, cuser=cuser, restapi=restapi
     ) 
     site_dicts = []
     site_dictionary = {
-        site_name : {
+        f'{site_name}': {
             'bad_assets': rule_enforcer.traverse(
                 current_parent_folder=f'{site_name}/media',
                 site_full_assets_list=[],
                 skip_sites=["_Auto-Migrated Global_", "_skeleton.cofc.edu"]
-            )
+            ),
+            'publish_result': rule_enforcer.publish_site(site_id)
         } 
-    } 
-    site_dictionary[site_name]['publish_result'] = rule_enforcer.publish_site(site_id)
+    }
     site_dicts.append(site_dictionary)
     with open('test_site_read_redesign.json', 'w') as f:
         json.dump(site_dicts, f)
@@ -297,15 +254,15 @@ def main():
         # Start with the base of site_name/content. initialize a
         print(f"Beginning scan for invalid filenames in site {site_name}")
         site_dictionary = {
-            site_name : {
+            f'{site_name}': {
                 'bad_assets': rule_enforcer.traverse(
                     current_parent_folder=f'{site_name}/content',
                     site_full_assets_list=[],
                     skip_sites=["_Auto-Migrated Global_", "_skeleton.cofc.edu"]
-                )
+                ),
+                'publish_result': rule_enforcer.publish_site(site_id)
             } 
         }
-        site_dictionary[site_name]['publish_result'] = rule_enforcer.publish_site(site_id) 
         site_dicts.append(site_dictionary)
         with open('site_read.json', 'w') as f:
             json.dump(site_dicts, f)

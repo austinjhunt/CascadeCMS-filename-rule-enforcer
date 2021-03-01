@@ -1,1 +1,1 @@
-cascade-filename-enforcer
+py-cascadecms-fname-enforcer
