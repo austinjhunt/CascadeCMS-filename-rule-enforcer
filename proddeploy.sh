@@ -5,4 +5,4 @@ rm -rf dist/*
 python -m build 
 
 # Deploy to PyPi.org
-python -m twine upload dist/*
+twine upload dist/*

@@ -4,8 +4,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="cascade-filename-enforcer", # Replace with your own username
-    version="0.0.1",
+    name="py-cascade8-filename-enforcer", # Replace with your own username
+    version="0.0.2",
     author="Austin Hunt",
     author_email="huntaj@cofc.edu",
     description="A Python package utilizing the Cascade CMS 8 REST API to enforce file name rules, namely 1) all lowercase, 2) spaces replaced with hyphens, 3) no trailing spaces",

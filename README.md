@@ -6,16 +6,18 @@ You can refer to the test() method [here](https://github.com/austinjhunt/Cascade
 * I recommend first creating and activating a virtual environment:
 * ```python3.6 -m venv venv && source venv/bin/activate ```
 * Next, install the package using ```pip```
-* ``` pip install py-cascadecms-fname-enforcer ```
+* ``` pip install py-cascade8-filename-enforcer ```
 * Create a python file, e.g. ```test.py```
 * Inside the file, add the following content 
 ```
-from c8ruleenforcer import CascadeCMSFileNameRuleEnforcer
+from cascade8_filename_enforcer.enforcer import CascadeCMSFileNameRuleEnforcer
+
 # specific to my example, I need quote to correctly parse 
 # the password from the environment variable
 from requests.utils import quote 
 # Set your configuration variables
 # I like to use os.environ.get() to pull from environment variables. 
+import os
 # There is a start-dev-template.sh script you can use to set the values for these.
 cpass = quote(os.environ.get('CASCADE_CMS_PASS',''))
 cuser = os.environ.get('CASCADE_CMS_USER','')
@@ -27,6 +29,7 @@ rule_enforcer = CascadeCMSFileNameRuleEnforcer(
     cuser=cuser, cpass=cpass, restapi=restapi
 )
 site_name = "name_of_your_site"
+site_id = "id_of_your_site"
 # Call the recursive traversal function that will also 
 # fix your improperly named assets as well as return a list of 
 # the ones it fixes in the form of: 
@@ -47,6 +50,8 @@ assets_fixed = rule_enforcer.traverse(
     skip_sites=["_Auto-Migrated Global_", "_skeleton.cofc.edu"] 
 )
 print(assets_fixed) 
+publish_result = rule_enforcer.publish_site(site_id)
+print(publish_result)
 ```
 The following is a more elaborate use of the package to iterate over many sites and keep a record of what 
 was changed for each in JSON format. 
@@ -91,5 +96,5 @@ if __name__ == "__main__":
 ```
 --- 
 ## Notes
-* If your site(s) does not have a root /content folder (e.g. sitename.edu/content/* in Cascade), be sure to remove the /content portion of the current_parent_folder argument. 
+* If your site(s) does not have a root /content folder (e.g. sitename.edu/content in Cascade), be sure to remove the /content portion of the current_parent_folder argument. 
 
